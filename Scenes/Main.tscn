@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=3 uid="uid://dwjyc8xlsj4ou"]
+
+[ext_resource type="PackedScene" uid="uid://bprwi6e4mmad0" path="res://Scenes/wall.tscn" id="1_r150o"]
+[ext_resource type="Script" uid="uid://bk4g43fwc1xmg" path="res://Scenes/main.gd" id="1_v1gob"]
+[ext_resource type="PackedScene" uid="uid://cherpcgta08dr" path="res://Scenes/paddle.tscn" id="2_idj7w"]
+[ext_resource type="PackedScene" uid="uid://blqxw56xvsbs5" path="res://Scenes/ball.tscn" id="3_kln2b"]
+[ext_resource type="Script" uid="uid://4pydv4qx8b2i" path="res://Scenes/enemy_paddle.gd" id="3_rgh2o"]
+[ext_resource type="PackedScene" uid="uid://dp7wx5tva5dmr" path="res://Scenes/edge.tscn" id="6_jw32o"]
+[ext_resource type="Texture2D" uid="uid://chb1xk2q8k4k2" path="res://Assets/Paddle_or_Wall.png" id="7_jw32o"]
+[ext_resource type="PackedScene" uid="uid://0ar6o8mcm14m" path="res://Scenes/ui.tscn" id="8_50glp"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_v1gob")
+
+[node name="Walls" type="Node" parent="."]
+
+[node name="TopWall" parent="Walls" instance=ExtResource("1_r150o")]
+position = Vector2(27, -750)
+rotation = 1.5708
+scale = Vector2(1, 9)
+
+[node name="BottomWall" parent="Walls" instance=ExtResource("1_r150o")]
+position = Vector2(4, 728)
+rotation = 1.5708
+scale = Vector2(1, 9)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.4, 0.4)
+
+[node name="Paddle" parent="." instance=ExtResource("2_idj7w")]
+position = Vector2(-1300, 0)
+
+[node name="EnemyPaddle" parent="." node_paths=PackedStringArray("ball") instance=ExtResource("2_idj7w")]
+position = Vector2(1300, 0)
+script = ExtResource("3_rgh2o")
+paddle_speed = 350000
+ball = NodePath("../Ball")
+
+[node name="Ball" parent="." instance=ExtResource("3_kln2b")]
+
+[node name="LeftEdge" parent="." instance=ExtResource("6_jw32o")]
+position = Vector2(-1421, -3)
+
+[node name="RightEdge" parent="." instance=ExtResource("6_jw32o")]
+position = Vector2(1422, -15)
+
+[node name="Line2D" type="Line2D" parent="."]
+texture_repeat = 2
+position = Vector2(0, -745.711)
+scale = Vector2(1, 2.16529)
+points = PackedVector2Array(0, 0, 3, 662)
+width = 32.0
+texture = ExtResource("7_jw32o")
+texture_mode = 1
+
+[node name="UI" parent="." instance=ExtResource("8_50glp")]
+
+[connection signal="point_scored" from="LeftEdge" to="." method="_on_enemy_scored"]
+[connection signal="point_scored" from="RightEdge" to="." method="_on_player_scored"]
